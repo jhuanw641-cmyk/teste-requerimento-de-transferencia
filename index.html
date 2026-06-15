@@ -249,6 +249,30 @@
             background: rgba(59, 130, 246, 0.08);
         }
 
+        .date-display-part {
+            display: inline-block;
+            text-align: center;
+        }
+
+        .date-display-day,
+        .date-display-month {
+            width: 30px;
+        }
+
+        .date-display-year {
+            width: 50px;
+        }
+
+        .date-display-separator {
+            display: inline-block;
+            width: 8px;
+            text-align: center;
+        }
+
+        .date-empty-space {
+            color: transparent;
+        }
+
         .calendar-real-input {
             position: absolute;
             left: 0;
@@ -341,14 +365,22 @@
                 return `${year}-${month}-${day}`;
             };
 
-            const formatDateBR = (isoDate) => {
-                if (!isoDate) return ' / / ';
+            const getDateParts = (isoDate) => {
+                if (!isoDate) {
+                    return {
+                        day: '',
+                        month: '',
+                        year: ''
+                    };
+                }
 
                 const [year, month, day] = isoDate.split('-');
 
-                if (!year || !month || !day) return ' / / ';
-
-                return `${day}/${month}/${year}`;
+                return {
+                    day: day || '',
+                    month: month || '',
+                    year: year || ''
+                };
             };
 
             const normalizeText = (text) => {
@@ -602,6 +634,8 @@
             };
 
             const renderDatePicker = (name, ref) => {
+                const parts = getDateParts(formData[name]);
+
                 return (
                     <div className="date-picker-wrapper">
                         <div
@@ -612,7 +646,21 @@
                             tabIndex="0"
                             title="Clique para escolher a data"
                         >
-                            {formatDateBR(formData[name])}
+                            <span className={`date-display-part date-display-day ${parts.day ? '' : 'date-empty-space'}`}>
+                                {parts.day || '00'}
+                            </span>
+
+                            <span className="date-display-separator">/</span>
+
+                            <span className={`date-display-part date-display-month ${parts.month ? '' : 'date-empty-space'}`}>
+                                {parts.month || '00'}
+                            </span>
+
+                            <span className="date-display-separator">/</span>
+
+                            <span className={`date-display-part date-display-year ${parts.year ? '' : 'date-empty-space'}`}>
+                                {parts.year || '0000'}
+                            </span>
                         </div>
 
                         <input
