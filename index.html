@@ -342,11 +342,11 @@
             };
 
             const formatDateBR = (isoDate) => {
-                if (!isoDate) return '__/__/____';
+                if (!isoDate) return ' / / ';
 
                 const [year, month, day] = isoDate.split('-');
 
-                if (!year || !month || !day) return '__/__/____';
+                if (!year || !month || !day) return ' / / ';
 
                 return `${day}/${month}/${year}`;
             };
