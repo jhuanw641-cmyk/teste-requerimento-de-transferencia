@@ -139,6 +139,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             color: black;
+            vertical-align: bottom;
         }
 
         .doc-name-wrapper {
@@ -147,12 +148,12 @@
 
         .doc-name-input {
             width: 100%;
-            min-height: 32px;
+            height: 32px;
             font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
             border-bottom: 1px solid black;
-            padding: 0 4px;
+            padding: 8px 4px 0 4px;
             line-height: 1;
         }
 
@@ -179,7 +180,7 @@
 
         .doc-small-input {
             width: 100%;
-            min-height: 1.6rem;
+            height: 1.6rem;
             background: transparent;
             border: none;
             border-bottom: 1px solid black;
@@ -189,8 +190,10 @@
             font-weight: bold;
             font-size: 12.8pt;
             color: black;
-            padding: 0 3px;
+            padding: 6px 3px 0 3px;
+            line-height: 1;
             text-transform: uppercase;
+            vertical-align: bottom;
         }
 
         .request-text {
@@ -230,7 +233,7 @@
 
         .date-picker-display {
             min-width: 128px;
-            min-height: 32px;
+            height: 32px;
             border-bottom: 1px solid black;
             display: flex;
             align-items: flex-end;
@@ -239,10 +242,10 @@
             font-size: 14pt;
             font-weight: normal;
             color: black;
-            padding: 0 8px;
+            padding: 0 8px 1px 8px;
             cursor: pointer;
             user-select: none;
-            line-height: 1.2;
+            line-height: 1;
         }
 
         .date-picker-display:hover {
@@ -252,6 +255,7 @@
         .date-display-part {
             display: inline-block;
             text-align: center;
+            line-height: 1;
         }
 
         .date-display-day,
@@ -267,6 +271,7 @@
             display: inline-block;
             width: 8px;
             text-align: center;
+            line-height: 1;
         }
 
         .date-empty-space {
@@ -290,7 +295,7 @@
 
         .doc-sign-input {
             width: 100%;
-            min-height: 32px;
+            height: 32px;
             background: transparent;
             border: none;
             border-bottom: 1px solid black;
@@ -300,7 +305,9 @@
             font-weight: bold;
             font-size: 13pt;
             color: black;
-            padding: 0 4px;
+            padding: 8px 4px 0 4px;
+            line-height: 1;
+            vertical-align: bottom;
         }
 
         .suggestions-list {
