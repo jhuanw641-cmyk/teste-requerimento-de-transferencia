@@ -83,10 +83,6 @@
             object-fit: contain;
         }
 
-        .file-input-hidden {
-            display: none;
-        }
-
         .info-row {
             display: flex;
             align-items: baseline;
@@ -194,6 +190,14 @@
                 return `${year}-${month}-${day}`;
             };
 
+            const normalizeText = (text) => {
+                return text
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+            };
+
             const [logo, setLogo] = useState('./brasao.png');
             const [csvData, setCsvData] = useState([]);
             const [searchTerm, setSearchTerm] = useState('');
@@ -257,6 +261,10 @@
                         });
                     }
                 }
+
+                result.sort((a, b) => {
+                    return a.nome.localeCompare(b.nome, 'pt-BR');
+                });
 
                 setCsvData(result);
             };
@@ -334,9 +342,33 @@
                 );
             };
 
-            const filteredStudents = csvData.filter(s => 
-                s.nome.toLowerCase().includes(searchTerm.toLowerCase())
-            ).slice(0, 15);
+            const filteredStudents = csvData
+                .filter((student) => {
+                    const nome = normalizeText(student.nome);
+                    const termo = normalizeText(searchTerm);
+
+                    if (!termo) return false;
+
+                    if (termo.length === 1) {
+                        return nome.startsWith(termo);
+                    }
+
+                    return nome.startsWith(termo) || nome.includes(termo);
+                })
+                .sort((a, b) => {
+                    const nomeA = normalizeText(a.nome);
+                    const nomeB = normalizeText(b.nome);
+                    const termo = normalizeText(searchTerm);
+
+                    const aComeca = nomeA.startsWith(termo);
+                    const bComeca = nomeB.startsWith(termo);
+
+                    if (aComeca && !bComeca) return -1;
+                    if (!aComeca && bComeca) return 1;
+
+                    return a.nome.localeCompare(b.nome, 'pt-BR');
+                })
+                .slice(0, 15);
 
             return (
                 <div className="flex flex-col lg:flex-row min-h-screen">
@@ -386,18 +418,24 @@
 
                                 {showSuggestions && searchTerm && csvData.length > 0 && (
                                     <div className="suggestions-list">
-                                        {filteredStudents.map((s, idx) => (
-                                            <div 
-                                                key={idx} 
-                                                className="p-3 hover:bg-blue-600 hover:text-white cursor-pointer border-b last:border-0 text-sm font-bold uppercase" 
-                                                onClick={() => selectStudent(s)}
-                                            >
-                                                {s.nome} 
-                                                <span className="text-[10px] opacity-70">
-                                                    {' '}({s.ano} {s.turma})
-                                                </span>
+                                        {filteredStudents.length > 0 ? (
+                                            filteredStudents.map((s, idx) => (
+                                                <div 
+                                                    key={idx} 
+                                                    className="p-3 hover:bg-blue-600 hover:text-white cursor-pointer border-b last:border-0 text-sm font-bold uppercase" 
+                                                    onClick={() => selectStudent(s)}
+                                                >
+                                                    {s.nome} 
+                                                    <span className="text-[10px] opacity-70">
+                                                        {' '}({s.ano} {s.turma})
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="p-3 text-sm text-slate-500 text-center">
+                                                Nenhum aluno encontrado
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 )}
                             </div>
