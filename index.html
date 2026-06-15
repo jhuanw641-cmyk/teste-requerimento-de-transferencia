@@ -152,25 +152,37 @@
             line-height: 1;
         }
 
-        .info-row {
-            display: grid;
-            grid-template-columns: 38px 72px 58px 46px 58px 88px 98px 78px;
-            align-items: end;
-            column-gap: 5px;
+        .school-info {
             width: 100%;
-            white-space: nowrap;
             font-size: 14pt;
+        }
+
+        .school-info-line {
+            display: grid;
+            align-items: end;
+            width: 100%;
+            column-gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .school-info-line-one {
+            grid-template-columns: 45px 1fr 65px 120px;
+        }
+
+        .school-info-line-two {
+            grid-template-columns: 65px 1fr 105px 125px;
         }
 
         .info-label {
             font-size: 14pt;
             font-weight: normal;
-            line-height: 1.5rem;
+            line-height: 1.6rem;
+            white-space: nowrap;
         }
 
         .doc-small-input {
             width: 100%;
-            min-height: 1.5rem;
+            min-height: 1.6rem;
             background: transparent;
             border: none;
             border-bottom: 1px solid black;
@@ -180,7 +192,8 @@
             font-weight: bold;
             font-size: 13.5pt;
             color: black;
-            padding: 0 2px;
+            padding: 0 4px;
+            text-transform: uppercase;
         }
 
         .request-text {
@@ -307,13 +320,14 @@
                 min-height: auto;
             }
 
-            .info-row {
-                grid-template-columns: 38px 1fr 58px 0.8fr;
-                row-gap: 10px;
+            .school-info-line-one,
+            .school-info-line-two {
+                grid-template-columns: 1fr;
+                row-gap: 6px;
             }
 
-            .mobile-break {
-                display: contents;
+            .info-label {
+                margin-top: 6px;
             }
         }
     </style>
@@ -412,7 +426,7 @@
                     if (columns.length >= 4) {
                         result.push({
                             nome: columns[0].trim().toUpperCase(),
-                            ano: columns[1].trim(),
+                            ano: columns[1].trim().toUpperCase(),
                             turma: columns[2].trim().toUpperCase(),
                             turno: columns[3].trim().toUpperCase()
                         });
@@ -433,6 +447,7 @@
 
                 if (
                     name === 'nomeAluno' ||
+                    name === 'ano' ||
                     name === 'turma' ||
                     name === 'turno'
                 ) {
@@ -734,42 +749,46 @@
                                 </span>
                             </div>
 
-                            <div className="info-row mb-14">
-                                <span className="info-label">Ano:</span>
+                            <div className="school-info mb-12">
+                                <div className="school-info-line school-info-line-one">
+                                    <span className="info-label">Ano:</span>
 
-                                <input
-                                    name="ano"
-                                    className="doc-small-input"
-                                    value={formData.ano}
-                                    onChange={handleTextChange}
-                                />
+                                    <input
+                                        name="ano"
+                                        className="doc-small-input"
+                                        value={formData.ano}
+                                        onChange={handleTextChange}
+                                    />
 
-                                <span className="info-label">Turma:</span>
+                                    <span className="info-label">Turma:</span>
 
-                                <input
-                                    name="turma"
-                                    className="doc-small-input"
-                                    value={formData.turma}
-                                    onChange={handleTextChange}
-                                />
+                                    <input
+                                        name="turma"
+                                        className="doc-small-input"
+                                        value={formData.turma}
+                                        onChange={handleTextChange}
+                                    />
+                                </div>
 
-                                <span className="info-label">Turno:</span>
+                                <div className="school-info-line school-info-line-two">
+                                    <span className="info-label">Turno:</span>
 
-                                <input
-                                    name="turno"
-                                    className="doc-small-input"
-                                    value={formData.turno}
-                                    onChange={handleTextChange}
-                                />
+                                    <input
+                                        name="turno"
+                                        className="doc-small-input"
+                                        value={formData.turno}
+                                        onChange={handleTextChange}
+                                    />
 
-                                <span className="info-label">Ano Letivo:</span>
+                                    <span className="info-label">Ano Letivo:</span>
 
-                                <input
-                                    name="anoLetivo"
-                                    className="doc-small-input"
-                                    value={formData.anoLetivo}
-                                    onChange={handleTextChange}
-                                />
+                                    <input
+                                        name="anoLetivo"
+                                        className="doc-small-input"
+                                        value={formData.anoLetivo}
+                                        onChange={handleTextChange}
+                                    />
+                                </div>
                             </div>
 
                             <div className="request-text mb-12">
