@@ -154,38 +154,27 @@
 
         .school-info {
             width: 100%;
-            font-size: 14pt;
-            margin-bottom: 46px;
+            margin-bottom: 48px;
         }
 
         .school-info-line {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 36px 135px 55px 45px 56px 120px 88px 78px;
+            align-items: end;
+            column-gap: 5px;
             width: 100%;
-            gap: 22px;
-            margin-bottom: 16px;
-        }
-
-        .school-info-line:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-field {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
             white-space: nowrap;
         }
 
         .info-label {
-            font-size: 14pt;
+            font-size: 13.5pt;
             font-weight: normal;
             line-height: 1.6rem;
             white-space: nowrap;
         }
 
         .doc-small-input {
+            width: 100%;
             min-height: 1.6rem;
             background: transparent;
             border: none;
@@ -194,26 +183,10 @@
             font-family: Arial, sans-serif;
             text-align: center;
             font-weight: bold;
-            font-size: 13.5pt;
+            font-size: 12.8pt;
             color: black;
-            padding: 0 4px;
+            padding: 0 3px;
             text-transform: uppercase;
-        }
-
-        .input-ano {
-            width: 170px;
-        }
-
-        .input-turma {
-            width: 70px;
-        }
-
-        .input-turno {
-            width: 165px;
-        }
-
-        .input-ano-letivo {
-            width: 105px;
         }
 
         .request-text {
@@ -341,9 +314,8 @@
             }
 
             .school-info-line {
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                gap: 14px 24px;
+                grid-template-columns: 36px 135px 55px 45px 56px 120px 88px 78px;
+                overflow-x: auto;
             }
         }
     </style>
@@ -767,51 +739,41 @@
 
                             <div className="school-info">
                                 <div className="school-info-line">
-                                    <div className="info-field">
-                                        <span className="info-label">Ano:</span>
+                                    <span className="info-label">Ano:</span>
 
-                                        <input
-                                            name="ano"
-                                            className="doc-small-input input-ano"
-                                            value={formData.ano}
-                                            onChange={handleTextChange}
-                                        />
-                                    </div>
+                                    <input
+                                        name="ano"
+                                        className="doc-small-input"
+                                        value={formData.ano}
+                                        onChange={handleTextChange}
+                                    />
 
-                                    <div className="info-field">
-                                        <span className="info-label">Turma:</span>
+                                    <span className="info-label">Turma:</span>
 
-                                        <input
-                                            name="turma"
-                                            className="doc-small-input input-turma"
-                                            value={formData.turma}
-                                            onChange={handleTextChange}
-                                        />
-                                    </div>
-                                </div>
+                                    <input
+                                        name="turma"
+                                        className="doc-small-input"
+                                        value={formData.turma}
+                                        onChange={handleTextChange}
+                                    />
 
-                                <div className="school-info-line">
-                                    <div className="info-field">
-                                        <span className="info-label">Turno:</span>
+                                    <span className="info-label">Turno:</span>
 
-                                        <input
-                                            name="turno"
-                                            className="doc-small-input input-turno"
-                                            value={formData.turno}
-                                            onChange={handleTextChange}
-                                        />
-                                    </div>
+                                    <input
+                                        name="turno"
+                                        className="doc-small-input"
+                                        value={formData.turno}
+                                        onChange={handleTextChange}
+                                    />
 
-                                    <div className="info-field">
-                                        <span className="info-label">Ano Letivo:</span>
+                                    <span className="info-label">Ano Letivo:</span>
 
-                                        <input
-                                            name="anoLetivo"
-                                            className="doc-small-input input-ano-letivo"
-                                            value={formData.anoLetivo}
-                                            onChange={handleTextChange}
-                                        />
-                                    </div>
+                                    <input
+                                        name="anoLetivo"
+                                        className="doc-small-input"
+                                        value={formData.anoLetivo}
+                                        onChange={handleTextChange}
+                                    />
                                 </div>
                             </div>
 
