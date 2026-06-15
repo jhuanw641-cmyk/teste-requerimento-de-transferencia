@@ -71,6 +71,10 @@
             input::placeholder {
                 color: transparent !important;
             }
+
+            .date-picker-display {
+                cursor: default !important;
+            }
         }
 
         .official-doc-font {
@@ -219,6 +223,42 @@
             font-weight: normal;
         }
 
+        .date-picker-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .date-picker-display {
+            min-width: 128px;
+            min-height: 32px;
+            border-bottom: 1px solid black;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            font-size: 14pt;
+            font-weight: normal;
+            color: black;
+            padding: 0 8px;
+            cursor: pointer;
+            user-select: none;
+            line-height: 1.2;
+        }
+
+        .date-picker-display:hover {
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .calendar-real-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 128px;
+            height: 32px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .sign-line-container {
             padding-top: 8px;
             width: 100%;
@@ -237,43 +277,6 @@
             font-size: 13pt;
             color: black;
             padding: 0 4px;
-        }
-
-        .date-slots-underlined {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 0;
-            min-height: 32px;
-            border-bottom: 1px solid black;
-            padding-bottom: 0;
-        }
-
-        .date-slot-input {
-            background: transparent;
-            border: none;
-            outline: none;
-            font-family: Arial, sans-serif;
-            font-size: 14pt;
-            font-weight: normal;
-            text-align: center;
-            line-height: 1;
-            color: black;
-            padding: 0;
-        }
-
-        .date-slot-item {
-            width: 30px;
-        }
-
-        .date-slot-year {
-            width: 48px;
-        }
-
-        .date-separator {
-            font-size: 1.35rem;
-            line-height: 1;
-            padding: 0 1px;
         }
 
         .suggestions-list {
@@ -325,17 +328,27 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         function App() {
-            const getTodayDateParts = () => {
+            const getTodayISODate = () => {
                 const now = new Date();
 
-                return {
-                    dia: String(now.getDate()).padStart(2, '0'),
-                    mes: String(now.getMonth() + 1).padStart(2, '0'),
-                    ano: String(now.getFullYear())
-                };
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+            };
+
+            const formatDateBR = (isoDate) => {
+                if (!isoDate) return '__/__/____';
+
+                const [year, month, day] = isoDate.split('-');
+
+                if (!year || !month || !day) return '__/__/____';
+
+                return `${day}/${month}/${year}`;
             };
 
             const normalizeText = (text) => {
@@ -346,7 +359,8 @@
                     .trim();
             };
 
-            const today = getTodayDateParts();
+            const requerimentoDateRef = useRef(null);
+            const recebidoDateRef = useRef(null);
 
             const [logo] = useState('./brasao.png');
             const [csvData, setCsvData] = useState([]);
@@ -361,13 +375,8 @@
                 turno: '',
                 anoLetivo: String(new Date().getFullYear()),
 
-                dataRequerimentoDia: today.dia,
-                dataRequerimentoMes: today.mes,
-                dataRequerimentoAno: today.ano,
-
-                dataRecebidoDia: '',
-                dataRecebidoMes: '',
-                dataRecebidoAno: '',
+                dataRequerimento: getTodayISODate(),
+                dataRecebido: '',
 
                 assinaturaResponsavel: '',
                 recebiDocumentacao: ''
@@ -453,15 +462,31 @@
                 }
             };
 
-            const handleDatePartChange = (e) => {
+            const handleDateChange = (e) => {
                 const { name, value } = e.target;
-                const maxLength = name.endsWith('Ano') ? 4 : 2;
-                const onlyNumbers = value.replace(/\D/g, '').slice(0, maxLength);
 
                 setFormData({
                     ...formData,
-                    [name]: onlyNumbers
+                    [name]: value
                 });
+            };
+
+            const openCalendar = (ref) => {
+                if (!ref.current) return;
+
+                if (typeof ref.current.showPicker === 'function') {
+                    ref.current.showPicker();
+                } else {
+                    ref.current.focus();
+                    ref.current.click();
+                }
+            };
+
+            const handleCalendarKeyDown = (e, ref) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openCalendar(ref);
+                }
             };
 
             const handleCsvUploadManual = (e) => {
@@ -493,8 +518,6 @@
             };
 
             const clearForm = () => {
-                const todayReset = getTodayDateParts();
-
                 setFormData({
                     nomeAluno: '',
                     ano: '',
@@ -502,13 +525,8 @@
                     turno: '',
                     anoLetivo: String(new Date().getFullYear()),
 
-                    dataRequerimentoDia: todayReset.dia,
-                    dataRequerimentoMes: todayReset.mes,
-                    dataRequerimentoAno: todayReset.ano,
-
-                    dataRecebidoDia: '',
-                    dataRecebidoMes: '',
-                    dataRecebidoAno: '',
+                    dataRequerimento: getTodayISODate(),
+                    dataRecebido: '',
 
                     assinaturaResponsavel: '',
                     recebiDocumentacao: ''
@@ -583,38 +601,28 @@
                 );
             };
 
-            const renderEditableDateSlots = (prefix) => {
+            const renderDatePicker = (name, ref) => {
                 return (
-                    <div className="date-slots-underlined">
-                        <input
-                            name={`${prefix}Dia`}
-                            className="date-slot-input date-slot-item"
-                            value={formData[`${prefix}Dia`]}
-                            onChange={handleDatePartChange}
-                            maxLength="2"
-                            inputMode="numeric"
-                        />
-
-                        <span className="date-separator">/</span>
-
-                        <input
-                            name={`${prefix}Mes`}
-                            className="date-slot-input date-slot-item"
-                            value={formData[`${prefix}Mes`]}
-                            onChange={handleDatePartChange}
-                            maxLength="2"
-                            inputMode="numeric"
-                        />
-
-                        <span className="date-separator">/</span>
+                    <div className="date-picker-wrapper">
+                        <div
+                            className="date-picker-display"
+                            onClick={() => openCalendar(ref)}
+                            onKeyDown={(e) => handleCalendarKeyDown(e, ref)}
+                            role="button"
+                            tabIndex="0"
+                            title="Clique para escolher a data"
+                        >
+                            {formatDateBR(formData[name])}
+                        </div>
 
                         <input
-                            name={`${prefix}Ano`}
-                            className="date-slot-input date-slot-year"
-                            value={formData[`${prefix}Ano`]}
-                            onChange={handleDatePartChange}
-                            maxLength="4"
-                            inputMode="numeric"
+                            ref={ref}
+                            type="date"
+                            name={name}
+                            className="calendar-real-input"
+                            value={formData[name]}
+                            onChange={handleDateChange}
+                            tabIndex="-1"
                         />
                     </div>
                 );
@@ -661,7 +669,7 @@
                                 </p>
 
                                 <p>
-                                    Clique direto nas linhas da folha. No nome do aluno, as sugestões aparecem automaticamente.
+                                    Clique direto nas linhas da folha. Para corrigir datas, clique na data e escolha pelo calendário.
                                 </p>
                             </div>
 
@@ -788,7 +796,7 @@
                                             Data:
                                         </span>
 
-                                        {renderEditableDateSlots('dataRequerimento')}
+                                        {renderDatePicker('dataRequerimento', requerimentoDateRef)}
                                     </div>
 
                                     <div className="sign-line-container">
@@ -811,7 +819,7 @@
                                             Data:
                                         </span>
 
-                                        {renderEditableDateSlots('dataRecebido')}
+                                        {renderDatePicker('dataRecebido', recebidoDateRef)}
                                     </div>
 
                                     <div className="sign-line-container">
