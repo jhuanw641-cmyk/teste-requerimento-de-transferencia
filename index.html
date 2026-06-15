@@ -95,12 +95,16 @@
         }
 
         .info-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 80px auto 45px auto 95px auto 90px;
             align-items: baseline;
-            justify-content: space-between;
+            column-gap: 6px;
             width: 100%;
-            gap: 12px;
             white-space: nowrap;
+        }
+
+        .info-label {
+            font-size: 14pt;
         }
         
         .signature-block {
@@ -164,6 +168,7 @@
             font-weight: bold;
             min-height: 1.5rem;
             color: black;
+            width: 100%;
         }
 
         .doc-sign-input {
@@ -672,49 +677,41 @@
 
                             {/* Informações Escolares */}
                             <div className="info-row mb-14 text-[14pt]">
-                                <div className="flex items-baseline">
-                                    <span className="mr-1">Ano:</span>
+                                <span className="info-label">Ano:</span>
 
-                                    <input
-                                        name="ano"
-                                        className="doc-small-input w-[90px]"
-                                        value={formData.ano}
-                                        onChange={handleTextChange}
-                                    />
-                                </div>
+                                <input
+                                    name="ano"
+                                    className="doc-small-input"
+                                    value={formData.ano}
+                                    onChange={handleTextChange}
+                                />
 
-                                <div className="flex items-baseline">
-                                    <span className="mr-1">Turma:</span>
+                                <span className="info-label">Turma:</span>
 
-                                    <input
-                                        name="turma"
-                                        className="doc-small-input w-[50px] uppercase"
-                                        value={formData.turma}
-                                        onChange={handleTextChange}
-                                    />
-                                </div>
+                                <input
+                                    name="turma"
+                                    className="doc-small-input uppercase"
+                                    value={formData.turma}
+                                    onChange={handleTextChange}
+                                />
 
-                                <div className="flex items-baseline flex-grow justify-center">
-                                    <span className="mr-1">Turno:</span>
+                                <span className="info-label">Turno:</span>
 
-                                    <input
-                                        name="turno"
-                                        className="doc-small-input min-w-[120px] uppercase"
-                                        value={formData.turno}
-                                        onChange={handleTextChange}
-                                    />
-                                </div>
+                                <input
+                                    name="turno"
+                                    className="doc-small-input uppercase"
+                                    value={formData.turno}
+                                    onChange={handleTextChange}
+                                />
 
-                                <div className="flex items-baseline">
-                                    <span className="mr-1">Ano Letivo:</span>
+                                <span className="info-label">Ano Letivo:</span>
 
-                                    <input
-                                        name="anoLetivo"
-                                        className="doc-small-input w-[100px]"
-                                        value={formData.anoLetivo}
-                                        onChange={handleTextChange}
-                                    />
-                                </div>
+                                <input
+                                    name="anoLetivo"
+                                    className="doc-small-input"
+                                    value={formData.anoLetivo}
+                                    onChange={handleTextChange}
+                                />
                             </div>
 
                             {/* Mensagem Central */}
